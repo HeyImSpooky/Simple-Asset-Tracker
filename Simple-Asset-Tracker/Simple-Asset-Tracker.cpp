@@ -2,22 +2,10 @@
 //
 
 #include <iostream>
-#include <thread>
-#include <chrono>
 
 int main()
 {
-    std::cout << "==========================\n";
-    std::cout << "Simple Asset Tracker | COS1 Development Project\n";
-    std::cout << "Version: 1.0.0 | Build Date: " << __DATE__ << " " << __TIME__ << " | Created by: Spooky\n";
-    std::cout << "==========================\n";
-    std::cout << "\n\n";
-    std::cout << "Initializing the data and threads...\n";
-
-    std::this_thread::sleep_for(std::chrono::seconds(3));
-    std::cout << "\n\n";
-    std::cout << "Database started successfully.\n";
-
+    std::cout << "Hello World!\n";
 }
 
 // Run program: Ctrl + F5 or Debug > Start Without Debugging menu
