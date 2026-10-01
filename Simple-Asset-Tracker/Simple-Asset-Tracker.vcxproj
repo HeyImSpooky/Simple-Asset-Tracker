@@ -21,7 +21,7 @@
   <PropertyGroup Label="Globals">
     <VCProjectVersion>18.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{423915cb-1bb5-47e3-9bf0-43b091598f98}</ProjectGuid>
+    <ProjectGuid>{423915CB-1BB5-47E3-9BF0-43B091598F98}</ProjectGuid>
     <RootNamespace>SimpleAssetTracker</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
