@@ -3,5 +3,5 @@
     <Platform Name="x64" />
     <Platform Name="x86" />
   </Configurations>
-  <Project Path="Simple-Asset-Tracker/Simple-Asset-Tracker.vcxproj" />
+  <Project Path="Simple-Asset-Tracker/Simple-Asset-Tracker.vcxproj" Id="423915cb-1bb5-47e3-9bf0-43b091598f98" />
 </Solution>
