@@ -16,4 +16,5 @@ private:
     bool AddAsset();
     void ViewAssets() const;
     InputReader input;
+    bool DeleteAsset();
 };
