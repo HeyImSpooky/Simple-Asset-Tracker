@@ -1,9 +1,9 @@
 #include "AssetTracker.h"
-#include <iostream>
 
 int main()
 {
-    RunAssetTracker();
+    AssetTracker tracker;
+    tracker.Run();
+
     return 0;
 }
-

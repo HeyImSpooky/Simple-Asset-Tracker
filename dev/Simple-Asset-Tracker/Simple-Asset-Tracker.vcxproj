@@ -139,6 +139,7 @@
     </Manifest>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Asset.cpp" />
     <ClCompile Include="AssetTracker.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>

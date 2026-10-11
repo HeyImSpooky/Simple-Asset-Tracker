@@ -5,18 +5,14 @@
 #include <limits>
 #include <string>
 
-void RunAssetTracker()
-{
-    // Assets are only stored while the program is running.
-    std::vector<Asset> assets;
-    int nextId = 1;
+void AssetTracker::Run() {
 
     // TODO: Load saved assets here later.
 
     while (true)
     {
         ConsoleColor::Menu("\n=== Simple Asset Tracker ===");
-        std::cout << "Version: 1.0.0 | Build Date: 9/29/2026\n";
+        std::cout << "Version: 2.0.0 | Build Date: 10/11/2026\n";
         std::cout << "=== Made by: Spooky ===\n\n";
 
         ConsoleColor::Menu("1. Add asset\n2. View assets\n3. Exit");
@@ -48,12 +44,12 @@ void RunAssetTracker()
         switch (choice)
         {
         case 1:
-            if (!AddAsset(assets, nextId))
+            if (!AddAsset())
                 return;
             break;
 
         case 2:
-            ViewAssets(assets);
+            ViewAssets();
             break;
 
         case 3:
@@ -67,8 +63,7 @@ void RunAssetTracker()
     }
 }
 
-bool AddAsset(std::vector<Asset>& assets, int& nextId)
-{
+bool AssetTracker::AddAsset() {
     Asset asset;
 
     std::cout << "Asset name: ";
@@ -137,7 +132,7 @@ bool AddAsset(std::vector<Asset>& assets, int& nextId)
     return true;
 }
 
-void ViewAssets(const std::vector<Asset>& assets)
+void AssetTracker::ViewAssets() const
 {
     if (assets.empty())
     {
@@ -147,10 +142,6 @@ void ViewAssets(const std::vector<Asset>& assets)
 
     for (const Asset& asset : assets)
     {
-        std::cout << "\nID: " << asset.id
-            << "\nName: " << asset.name
-            << "\nCost: " << asset.cost
-            << "\nRecurring: " << (asset.recurring ? "Yes" : "No")
-            << "\nFrequency: " << asset.frequency << '\n';
+        asset.Display();
     }
 }
