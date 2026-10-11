@@ -127,6 +127,8 @@ bool AssetTracker::AddAsset() {
 
 void AssetTracker::ViewAssets() const
 {
+    std::cout << "\n=== Asset List ===\n";
+    std::cout << "Total assets: " << assets.size() << '\n';
     if (assets.empty())
     {
         ConsoleColor::Warning("No assets added yet.");
