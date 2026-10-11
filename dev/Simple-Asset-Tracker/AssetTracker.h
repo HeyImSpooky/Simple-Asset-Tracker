@@ -2,6 +2,7 @@
 
 #include "Asset.h"
 #include <vector>
+#include "InputReader.h"
 
 class AssetTracker
 {
@@ -14,4 +15,5 @@ private:
 
     bool AddAsset();
     void ViewAssets() const;
+    InputReader input;
 };

@@ -16,36 +16,19 @@ void AssetTracker::Run() {
         std::cout << "=== Made by: Spooky ===\n\n";
 
         ConsoleColor::Menu("1. Add asset\n2. View assets\n3. Exit");
-        std::cout << "Choose an option: ";
-
         int choice = 0;
 
-        if (!(std::cin >> choice))
+        if (!input.ReadInt("Choose an option: ", 1, 3, choice))
         {
-            // Stop if the input stream closes.
-            if (std::cin.eof())
-                return;
-
-            // Clear bad input so the user can try again.
-            std::cin.clear();
-            std::cin.ignore(
-                (std::numeric_limits<std::streamsize>::max)(), '\n'
-            );
-
-            ConsoleColor::Warning("Please choose a real selection.");
-            continue;
+            return;
         }
-
-        // Remove the newline left behind by reading the number.
-        std::cin.ignore(
-            (std::numeric_limits<std::streamsize>::max)(), '\n'
-        );
-
         switch (choice)
         {
         case 1:
             if (!AddAsset())
+            {
                 return;
+            }
             break;
 
         case 2:
@@ -53,12 +36,8 @@ void AssetTracker::Run() {
             break;
 
         case 3:
-            ConsoleColor::Success("Goodbye!\n");
+            ConsoleColor::Success("Goodbye!");
             return;
-
-        default:
-            ConsoleColor::Warning("Please choose 1, 2, or 3.");
-            break;
         }
     }
 }
@@ -66,57 +45,65 @@ void AssetTracker::Run() {
 bool AssetTracker::AddAsset() {
     Asset asset;
 
-    std::cout << "Asset name: ";
-    if (!std::getline(std::cin, asset.name))
-        return false;
-
-    if (asset.name.find_first_not_of(" \t") == std::string::npos)
+    while (true)
     {
-        ConsoleColor::Error("Asset name cannot be empty.");
-        return true; // Return to the menu.
-    }
+        std::cout << "Asset name: ";
 
-    // Cost remains text for now.
-    // TODO: Validate that the cost is a number.
-    std::cout << "Cost: ";
-    if (!std::getline(std::cin, asset.cost))
-        return false;
-
-    std::string recurring;
-    std::cout << "Recurring cost? (y/n): ";
-    if (!std::getline(std::cin, recurring))
-        return false;
-
-    if (recurring != "y" && recurring != "Y" &&
-        recurring != "n" && recurring != "N")
-    {
-        ConsoleColor::Error("Please enter y or n.");
-        return true;
-    }
-
-    asset.recurring = (recurring == "y" || recurring == "Y");
-
-    // Only ask for a frequency if the cost repeats.
-    if (asset.recurring)
-    {
-        std::string frequency;
-        std::cout << "Weekly or monthly? (w/m): ";
-
-        if (!std::getline(std::cin, frequency))
+        if (!std::getline(std::cin, asset.name))
             return false;
 
-        if (frequency == "w" || frequency == "W")
+        if (asset.name.find_first_not_of(" \t\r") != std::string::npos)
+            break;
+
+        ConsoleColor::Error("Asset name cannot be empty. Try again.");
+    }
+
+    if (!input.ReadCost("Enter a cost of 0 or more: ", asset.cost))
+    {
+        return false;
+    }
+
+    std::string recurring;
+
+    while (true)
+    {
+        std::cout << "Recurring cost? (y/n): ";
+
+        if (!std::getline(std::cin, recurring))
+            return false;
+
+        if (recurring == "y" || recurring == "Y" ||
+            recurring == "n" || recurring == "N")
         {
-            asset.frequency = "Weekly";
+            asset.recurring = (recurring == "y" || recurring == "Y");
+            break;
         }
-        else if (frequency == "m" || frequency == "M")
+
+        ConsoleColor::Error("Please enter y or n. Try again.");
+    }
+    if (asset.recurring)
+    {
+        while (true)
         {
-            asset.frequency = "Monthly";
-        }
-        else
-        {
-            ConsoleColor::Error("Please enter w or m.");
-            return true;
+            std::string frequency;
+            std::cout << "Weekly or monthly? (w/m): ";
+
+            if (!std::getline(std::cin, frequency))
+                return false;
+
+            if (frequency == "w" || frequency == "W")
+            {
+                asset.frequency = "Weekly";
+                break;
+            }
+
+            if (frequency == "m" || frequency == "M")
+            {
+                asset.frequency = "Monthly";
+                break;
+            }
+
+            ConsoleColor::Error("Please enter w or m. Try again.");
         }
     }
 

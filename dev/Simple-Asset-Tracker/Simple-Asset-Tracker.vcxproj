@@ -141,12 +141,14 @@
   <ItemGroup>
     <ClCompile Include="Asset.cpp" />
     <ClCompile Include="AssetTracker.cpp" />
+    <ClCompile Include="InputReader.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AssetTracker.h" />
     <ClInclude Include="ConsoleColors.h" />
     <ClInclude Include="Asset.h" />
+    <ClInclude Include="InputReader.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
