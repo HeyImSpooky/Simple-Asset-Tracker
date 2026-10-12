@@ -5,123 +5,111 @@
 #include <limits>
 #include <string>
 
-void RunAssetTracker()
-{
-    // Assets are only stored while the program is running.
-    std::vector<Asset> assets;
-    int nextId = 1;
+void AssetTracker::Run() {
 
     // TODO: Load saved assets here later.
 
     while (true)
     {
         ConsoleColor::Menu("\n=== Simple Asset Tracker ===");
-        std::cout << "Version: 1.0.0 | Build Date: 9/29/2026\n";
+        std::cout << "Version: 2.0.0 | Build Date: 10/11/2026\n";
         std::cout << "=== Made by: Spooky ===\n\n";
 
-        ConsoleColor::Menu("1. Add asset\n2. View assets\n3. Exit");
-        std::cout << "Choose an option: ";
-
+        ConsoleColor::Menu(
+            "1. Add asset\n2. View assets\n3. Delete asset\n4. Exit");
         int choice = 0;
 
-        if (!(std::cin >> choice))
+        if (!input.ReadInt("Choose an option: ", 1, 4, choice))
         {
-            // Stop if the input stream closes.
-            if (std::cin.eof())
-                return;
-
-            // Clear bad input so the user can try again.
-            std::cin.clear();
-            std::cin.ignore(
-                (std::numeric_limits<std::streamsize>::max)(), '\n'
-            );
-
-            ConsoleColor::Warning("Please choose a real selection.");
-            continue;
+            return;
         }
-
-        // Remove the newline left behind by reading the number.
-        std::cin.ignore(
-            (std::numeric_limits<std::streamsize>::max)(), '\n'
-        );
-
         switch (choice)
         {
         case 1:
-            if (!AddAsset(assets, nextId))
+            if (!AddAsset())
+            {
                 return;
+            }
             break;
 
         case 2:
-            ViewAssets(assets);
+            ViewAssets();
             break;
 
         case 3:
-            ConsoleColor::Success("Goodbye!\n");
-            return;
-
-        default:
-            ConsoleColor::Warning("Please choose 1, 2, or 3.");
+            if (!DeleteAsset())
+                return;
             break;
+
+        case 4:
+            ConsoleColor::Success("Goodbye!");
+            return;
         }
     }
 }
 
-bool AddAsset(std::vector<Asset>& assets, int& nextId)
-{
+bool AssetTracker::AddAsset() {
     Asset asset;
 
-    std::cout << "Asset name: ";
-    if (!std::getline(std::cin, asset.name))
-        return false;
-
-    if (asset.name.find_first_not_of(" \t") == std::string::npos)
+    while (true)
     {
-        ConsoleColor::Error("Asset name cannot be empty.");
-        return true; // Return to the menu.
-    }
+        std::cout << "Asset name: ";
 
-    // Cost remains text for now.
-    // TODO: Validate that the cost is a number.
-    std::cout << "Cost: ";
-    if (!std::getline(std::cin, asset.cost))
-        return false;
-
-    std::string recurring;
-    std::cout << "Recurring cost? (y/n): ";
-    if (!std::getline(std::cin, recurring))
-        return false;
-
-    if (recurring != "y" && recurring != "Y" &&
-        recurring != "n" && recurring != "N")
-    {
-        ConsoleColor::Error("Please enter y or n.");
-        return true;
-    }
-
-    asset.recurring = (recurring == "y" || recurring == "Y");
-
-    // Only ask for a frequency if the cost repeats.
-    if (asset.recurring)
-    {
-        std::string frequency;
-        std::cout << "Weekly or monthly? (w/m): ";
-
-        if (!std::getline(std::cin, frequency))
+        if (!std::getline(std::cin, asset.name))
             return false;
 
-        if (frequency == "w" || frequency == "W")
+        if (asset.name.find_first_not_of(" \t\r") != std::string::npos)
+            break;
+
+        ConsoleColor::Error("Asset name cannot be empty. Try again.");
+    }
+
+    if (!input.ReadCost("Enter a cost of 0 or more: ", asset.cost))
+    {
+        return false;
+    }
+
+    std::string recurring;
+
+    while (true)
+    {
+        std::cout << "Recurring cost? (y/n): ";
+
+        if (!std::getline(std::cin, recurring))
+            return false;
+
+        if (recurring == "y" || recurring == "Y" ||
+            recurring == "n" || recurring == "N")
         {
-            asset.frequency = "Weekly";
+            asset.recurring = (recurring == "y" || recurring == "Y");
+            break;
         }
-        else if (frequency == "m" || frequency == "M")
+
+        ConsoleColor::Error("Please enter y or n. Try again.");
+    }
+    if (asset.recurring)
+    {
+        while (true)
         {
-            asset.frequency = "Monthly";
-        }
-        else
-        {
-            ConsoleColor::Error("Please enter w or m.");
-            return true;
+            std::string frequency;
+            std::cout << "Weekly or monthly? (w/m): ";
+
+            if (!std::getline(std::cin, frequency))
+                return false;
+
+            if (frequency == "w" || frequency == "W")
+            {
+                asset.frequency = "Weekly";
+                break;
+            }
+
+            if (frequency == "m" || frequency == "M")
+            {
+                asset.frequency = "Monthly";
+                break;
+            }
+
+            ConsoleColor::Error("Please enter w or m. Try again.");
         }
     }
 
@@ -137,8 +125,10 @@ bool AddAsset(std::vector<Asset>& assets, int& nextId)
     return true;
 }
 
-void ViewAssets(const std::vector<Asset>& assets)
+void AssetTracker::ViewAssets() const
 {
+    std::cout << "\n=== Asset List ===\n";
+    std::cout << "Total assets: " << assets.size() << '\n';
     if (assets.empty())
     {
         ConsoleColor::Warning("No assets added yet.");
@@ -147,10 +137,38 @@ void ViewAssets(const std::vector<Asset>& assets)
 
     for (const Asset& asset : assets)
     {
-        std::cout << "\nID: " << asset.id
-            << "\nName: " << asset.name
-            << "\nCost: " << asset.cost
-            << "\nRecurring: " << (asset.recurring ? "Yes" : "No")
-            << "\nFrequency: " << asset.frequency << '\n';
+        asset.Display();
     }
+}
+bool AssetTracker::DeleteAsset()
+{
+    if (assets.empty())
+    {
+        ConsoleColor::Warning("No assets to delete.");
+        return true;
+    }
+
+    ViewAssets();
+
+    int id = 0;
+    if (!input.ReadInt("Enter asset ID (0 to cancel): ",
+        0, nextId - 1, id))
+        return false;
+
+    if (id == 0)
+        return true;
+
+    // Find the asset with this ID.
+    for (auto it = assets.begin(); it != assets.end(); ++it)
+    {
+        if (it->id == id)
+        {
+            assets.erase(it);
+            ConsoleColor::Success("Asset deleted.");
+            return true;
+        }
+    }
+
+    ConsoleColor::Warning("Asset ID not found.");
+    return true;
 }
