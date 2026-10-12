@@ -33,7 +33,10 @@ I plan to prioritize my code cleanliness and organize functions in proper classe
 
 ### Week 2
 
-My next stand up will go here...
+Worked on: Three classes, input validation, deleting assets, and clearer output.
+Challenges: Moving functions into classes and fixing function calls.
+Learned: How objects work together and how getline() with try/catch handles invalid input.
+Next steps: Saving and loading assets with file I/O.
 
 ### Week 3
 
