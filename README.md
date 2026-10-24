@@ -33,12 +33,21 @@ I plan to prioritize my code cleanliness and organize functions in proper classe
 
 ### Week 2
 
-My next stand up will go here...
+Worked on: Three classes, input validation, deleting assets, and clearer output.
+Challenges: Moving functions into classes and fixing function calls.
+Learned: How objects work together and how getline() with try/catch handles invalid input.
+Next steps: Saving and loading assets with file I/O.
 
 ### Week 3
 
-Stay tuned, this stand up is coming soon...
+didnt get to do much at this stage as life hit, but I was able to recover in week 4
 
 ### Week 4
 
-My final stand up...
+This week I added saving and loading so the assets dont disappear when you close the program. It writes them to a file and loads them back when it starts up. I also did the Milestone 4 writeup and tested everything one more time.
+
+Biggest thing was figuring out a save format that still worked with names that have spaces, I got it working by writing each asset out on its own lines and reading them back the same way.
+
+I leveled up on reading and writing files in c++ and finishing a project all the way instead of leaving stuff half done.
+
+If I kept going I would add editing an asset and a running total of all the costs.
