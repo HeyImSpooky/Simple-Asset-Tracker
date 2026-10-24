@@ -33,9 +33,16 @@ I plan to prioritize my code cleanliness and organize functions in proper classe
 
 ### Week 2
 
+<<<<<<< HEAD
 Fixed how the program works according to Day 3 Lecture
 Added some Colors to the menu and refractored the menu
 and some other things I forgot
+=======
+Worked on: Three classes, input validation, deleting assets, and clearer output.
+Challenges: Moving functions into classes and fixing function calls.
+Learned: How objects work together and how getline() with try/catch handles invalid input.
+Next steps: Saving and loading assets with file I/O.
+>>>>>>> eeb13700c79c825f0114a6ba618f1e76b23b964a
 
 ### Week 3
 
