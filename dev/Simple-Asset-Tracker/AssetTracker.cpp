@@ -2,17 +2,19 @@
 #include "ConsoleColors.h"
 
 #include <iostream>
+#include <fstream>
 #include <limits>
 #include <string>
 
 void AssetTracker::Run() {
 
     // TODO: Load saved assets here later.
+    LoadAssets();
 
     while (true)
     {
         ConsoleColor::Menu("\n=== Simple Asset Tracker ===");
-        std::cout << "Version: 2.0.0 | Build Date: 10/11/2026\n";
+        std::cout << "Version: 4.0.0 | Build Date: 10/23/2026\n";
         std::cout << "=== Made by: Spooky ===\n\n";
 
         ConsoleColor::Menu(
@@ -122,6 +124,7 @@ bool AssetTracker::AddAsset() {
     );
 
     // TODO: Save assets to a file here later.
+	SaveAssets();
     return true;
 }
 
@@ -164,6 +167,7 @@ bool AssetTracker::DeleteAsset()
         if (it->id == id)
         {
             assets.erase(it);
+            SaveAssets();
             ConsoleColor::Success("Asset deleted.");
             return true;
         }
@@ -171,4 +175,79 @@ bool AssetTracker::DeleteAsset()
 
     ConsoleColor::Warning("Asset ID not found.");
     return true;
+}
+void AssetTracker::SaveAssets() const
+{
+    std::ofstream file(dataFile);
+    if (!file)
+    {
+        ConsoleColor::Error("Could not save assets to file.");
+        return;
+    }
+
+    // First line stores the next ID so IDs stay unique after reloading.
+    file << nextId << '\n';
+
+    // Each asset is written as five lines in a fixed order.
+    for (const Asset& asset : assets)
+    {
+        file << asset.id << '\n'
+            << asset.name << '\n'
+            << asset.cost << '\n'
+            << (asset.recurring ? 1 : 0) << '\n'
+            << asset.frequency << '\n';
+    }
+}
+
+void AssetTracker::LoadAssets()
+{
+    std::ifstream file(dataFile);
+
+    // No saved file yet is normal on a first run, so just start empty.
+    if (!file)
+        return;
+
+    assets.clear();
+
+    std::string line;
+
+    // Restore the next ID from the first line.
+    if (!std::getline(file, line))
+        return;
+
+    try
+    {
+        nextId = std::stoi(line);
+    }
+    catch (...)
+    {
+        nextId = 1;
+    }
+
+    // Read the five lines of each asset until the file runs out.
+    while (true)
+    {
+        Asset asset;
+        std::string idLine, costLine, recurringLine;
+
+        if (!std::getline(file, idLine)) break;
+        if (!std::getline(file, asset.name)) break;
+        if (!std::getline(file, costLine)) break;
+        if (!std::getline(file, recurringLine)) break;
+        if (!std::getline(file, asset.frequency)) break;
+
+        try
+        {
+            asset.id = std::stoi(idLine);
+            asset.cost = std::stod(costLine);
+        }
+        catch (...)
+        {
+            // Skip a damaged record instead of crashing.
+            continue;
+        }
+
+        asset.recurring = (recurringLine == "1");
+        assets.push_back(asset);
+    }
 }
